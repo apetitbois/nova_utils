@@ -23,8 +23,8 @@ class jsonParser:
             inputs["required"][f"sourceFile_{i}"] = (file_list,)
         return inputs
     
-    RETURN_TYPES = ("STRING", "STRING", "STRING", 'FLOAT', "STRING")
-    RETURN_NAMES = ("positive_prompt","negative_prompt", "lora_names", "lora_weights", "prompt_name")
+    RETURN_TYPES = ("STRING", "STRING", "STRING", 'FLOAT',"STRING", 'FLOAT',"STRING", 'FLOAT',"STRING", 'FLOAT',"STRING", 'FLOAT', "STRING")
+    RETURN_NAMES = ("positive_prompt","negative_prompt", "lora_name_0", "lora_weight_0","lora_name_1", "lora_weight_1","lora_name_2", "lora_weight_2","lora_name_3", "lora_weight_3","lora_name_4", "lora_weight_4", "prompt_name")
     FUNCTION = "run"
     CATEGORY = "💟NovaUtils/Parsers"
     
@@ -85,10 +85,15 @@ class jsonParser:
         content = self.parseJson(fName)
         p = content['prompt']
         prompt = self.parseTokens(p)
-        lora = content['lora']
-        loraName = lora['name']
-        loraWeight = lora['weight']
+        lora = content['loras']
+        loraName = ['','','','','']
+        loraWeight = [0.0,0.0,0.0,0.0,0.0]
+        for i in range(0,len(lora)):
+            if i>4:
+                break
+            loraName[i] = lora[i]['name']
+            loraWeight[i] = random.uniform(lora[i]['weight-range'][0],lora[i]['weight-range'][1])
         negativePrompt = content['negative_prompt']
         prompt_name = os.path.basename(fName)
         prompt_name = prompt_name.replace(".json",'')
-        return (prompt,negativePrompt, loraName,loraWeight, prompt_name)
+        return (prompt,negativePrompt, loraName[0],loraWeight[0], loraName[1],loraWeight[1], loraName[2],loraWeight[2], loraName[3],loraWeight[3], loraName[4],loraWeight[4], prompt_name)
